@@ -2606,7 +2606,7 @@ local updateTimeSlider = createSlider("Horário (Luz)", UDim2.new(0.06, 0, 0.38,
 
 
 
-    --Lighting.ClockTime = val
+    Lighting.ClockTime = val
 
 
 
@@ -2750,7 +2750,7 @@ ResetTimeBtn.MouseButton1Click:Connect(function()
 
 
 
-    --Lighting.ClockTime = ORIGINAL_TIME
+    Lighting.ClockTime = ORIGINAL_TIME
 
 
 
@@ -3726,7 +3726,7 @@ RunService.RenderStepped:Connect(function()
 
 
 
-        --Lighting.ClockTime = CurrentTime
+        Lighting.ClockTime = CurrentTime
 
 
 
