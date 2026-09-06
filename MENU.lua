@@ -3,7 +3,6 @@ local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
-local Lighting = game:GetService("Lighting")
 
 local LocalPlayer = Players.LocalPlayer
 local Camera = Workspace.CurrentCamera
@@ -33,10 +32,6 @@ local function fetchKeysFromGithub()
 
     return keysTable
 end
-
--- Salva o horário padrão
-local ORIGINAL_TIME = Lighting.ClockTime
-local CurrentTime = ORIGINAL_TIME
 
 -- Configurações Gerais
 local HighlightEnabled = false
@@ -83,7 +78,7 @@ FOVStroke.Parent = FOVFrame
 
 -- Janela Principal do Cheat (Oculta até autenticar)
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 220, 0, 460)
+Frame.Size = UDim2.new(0, 220, 0, 400)
 Frame.Position = UDim2.new(0.05, 0, 0.15, 0)
 Frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Frame.BorderSizePixel = 0
@@ -237,14 +232,11 @@ local function createButton(text, pos)
     return btn
 end
 
-local HighlightBtn = createButton("Highlight: OFF", UDim2.new(0.06, 0, 0.07, 0))
-local TextBtn = createButton("Distancia/Nomes: OFF", UDim2.new(0.06, 0, 0.13, 0))
-local AimbotBtn = createButton("Aimbot: OFF", UDim2.new(0.06, 0, 0.19, 0))
-local TargetBtn = createButton("Alvo: Peito", UDim2.new(0.06, 0, 0.25, 0))
+local HighlightBtn = createButton("Highlight: OFF", UDim2.new(0.06, 0, 0.08, 0))
+local TextBtn = createButton("Distancia/Nomes: OFF", UDim2.new(0.06, 0, 0.16, 0))
+local AimbotBtn = createButton("Aimbot: OFF", UDim2.new(0.06, 0, 0.24, 0))
+local TargetBtn = createButton("Alvo: Peito", UDim2.new(0.06, 0, 0.32, 0))
 TargetBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 180)
-
-local ResetTimeBtn = createButton("Restaurar Hora Padrão", UDim2.new(0.06, 0, 0.31, 0))
-ResetTimeBtn.BackgroundColor3 = Color3.fromRGB(120, 60, 180)
 
 ----------------------------------------------------------------
 -- Criador de Sliders
@@ -293,12 +285,6 @@ local function createSlider(labelText, posLabel, posBar, minVal, maxVal, default
         onUpdate(val)
     end
 
-    local function setValueExternal(val)
-        local ratio = math.clamp((val - minVal) / (maxVal - minVal), 0, 1)
-        SliderFill.Size = UDim2.new(ratio, 0, 1, 0)
-        SliderLabel.Text = labelText .. ": " .. math.floor(val) .. suffix
-    end
-
     SliderBack.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             isDragging = true
@@ -317,32 +303,19 @@ local function createSlider(labelText, posLabel, posBar, minVal, maxVal, default
             isDragging = false
         end
     end)
-
-    return setValueExternal
 end
 
-local updateTimeSlider = createSlider("Horário (Luz)", UDim2.new(0.06, 0, 0.38, 0), UDim2.new(0.06, 0, 0.42, 0), 0, 24, CurrentTime, "h", function(val)
-    CurrentTime = val
-    Lighting.ClockTime = val
-end)
-
-createSlider("Raio FOV", UDim2.new(0.06, 0, 0.48, 0), UDim2.new(0.06, 0, 0.52, 0), 30, 500, FOV_RADIUS, "", function(val)
+createSlider("Raio FOV", UDim2.new(0.06, 0, 0.48, 0), UDim2.new(0.06, 0, 0.54, 0), 30, 500, FOV_RADIUS, "", function(val)
     FOV_RADIUS = math.floor(val)
 end)
 
-createSlider("Distância ESP", UDim2.new(0.06, 0, 0.58, 0), UDim2.new(0.06, 0, 0.62, 0), 100, 5000, MAX_ESP_DISTANCE, "m", function(val)
+createSlider("Distância ESP", UDim2.new(0.06, 0, 0.64, 0), UDim2.new(0.06, 0, 0.70, 0), 100, 5000, MAX_ESP_DISTANCE, "m", function(val)
     MAX_ESP_DISTANCE = math.floor(val)
 end)
 
 ----------------------------------------------------------------
 -- Lógica do Aimbot e ESP
 ----------------------------------------------------------------
-ResetTimeBtn.MouseButton1Click:Connect(function()
-    CurrentTime = ORIGINAL_TIME
-    Lighting.ClockTime = ORIGINAL_TIME
-    updateTimeSlider(ORIGINAL_TIME)
-end)
-
 local function isTeammate(player)
     if player == LocalPlayer then return false end
     if LocalPlayer.Team and player.Team then
@@ -460,8 +433,6 @@ RunService.RenderStepped:Connect(function()
     FOVFrame.Visible = AimbotEnabled and Frame.Visible
 
     if Frame.Visible then
-        Lighting.ClockTime = CurrentTime
-
         if AimbotEnabled and Aiming then
             local target = getClosestPlayerToCursor()
             if target and target.Character then
