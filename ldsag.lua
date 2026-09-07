@@ -432,7 +432,8 @@ RunService.RenderStepped:Connect(function()
     FOVFrame.Position = UDim2.new(0, mousePos.X - FOV_RADIUS, 0, mousePos.Y - FOV_RADIUS)
     FOVFrame.Visible = AimbotEnabled and Frame.Visible
 
-    if Frame.Visible then
+    -- Removido o bloqueio 'if Frame.Visible then' para permitir que o Aimbot e ESP continuem funcionando mesmo com o menu fechado.
+    if not KeyFrame.Parent then
         if AimbotEnabled and Aiming then
             local target = getClosestPlayerToCursor()
             if target and target.Character then
