@@ -430,9 +430,10 @@ RunService.RenderStepped:Connect(function()
     local mousePos = UserInputService:GetMouseLocation()
     FOVFrame.Size = UDim2.new(0, FOV_RADIUS * 2, 0, FOV_RADIUS * 2)
     FOVFrame.Position = UDim2.new(0, mousePos.X - FOV_RADIUS, 0, mousePos.Y - FOV_RADIUS)
-    FOVFrame.Visible = AimbotEnabled and Frame.Visible
+    
+    -- O FOV agora aparece sempre que o Aimbot está ligado (independente de o menu estar aberto ou fechado)
+    FOVFrame.Visible = AimbotEnabled and (not KeyFrame.Parent)
 
-    -- Removido o bloqueio 'if Frame.Visible then' para permitir que o Aimbot e ESP continuem funcionando mesmo com o menu fechado.
     if not KeyFrame.Parent then
         if AimbotEnabled and Aiming then
             local target = getClosestPlayerToCursor()
